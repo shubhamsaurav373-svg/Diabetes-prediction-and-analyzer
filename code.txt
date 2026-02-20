@@ -1,0 +1,60 @@
+# Importing necessary libraries
+import pandas as pd
+from sklearn.model_selection import train_test_split, cross_val_score
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
+
+# Loading the dataset
+df = pd.read_csv('/content/drive/MyDrive/diabetes.csv')
+
+# Display basic information
+print("Dataset Info:")
+print(df.info())
+print("\nFirst 5 rows:")
+print(df.head())
+
+# Defining X and y variables
+X = df.drop('Outcome', axis=1)
+y = df['Outcome']
+
+# Spliting the data into training and testing sets (80% train, 20% test)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Using Logistic Regression
+model = LogisticRegression(max_iter=1000, random_state=42)
+
+# Training the model
+model.fit(X_train, y_train)
+
+# Making predictions on the test set
+y_pred = model.predict(X_test)
+
+# Model performance
+print("\nTest Set Evaluation:")
+print(f"Accuracy: {accuracy_score(y_test, y_pred):.2f}")
+print("Confusion Matrix:")
+print(confusion_matrix(y_test, y_pred))
+print("\nClassification Report:")
+print(classification_report(y_test, y_pred))
+
+# Entering parameters inside the function
+def predict_diabetes():
+    print("\nEnter New Patient Details:")
+    pregnancies = int(input("Number of Pregnancies: "))
+    glucose = float(input("Glucose Level: "))
+    blood_pressure = float(input("Blood Pressure: "))
+    skin_thickness = float(input("Skin Thickness: "))
+    insulin = float(input("Insulin Level: "))
+    bmi = float(input("BMI: "))
+    diabetes_pedigree = float(input("Diabetes Pedigree Function: "))
+    age = int(input("Age: "))
+
+    new_patient = [[pregnancies, glucose, blood_pressure, skin_thickness, insulin, bmi, diabetes_pedigree, age]]
+    prediction = model.predict(new_patient)[0]
+
+    if prediction == 1:
+        print("\nPrediction: The patient is likely to have diabetes.")
+    else:
+        print("\nPrediction: The patient is unlikely to have diabetes.")
+
+predict_diabetes()
